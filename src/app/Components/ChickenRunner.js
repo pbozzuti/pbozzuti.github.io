@@ -1,83 +1,101 @@
-import { useEffect, useState } from "react"
-
+import { useEffect, useState, useRef } from "react";
 
 const getRandomInt = (min, max) => {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 };
 
 export default function ChickenRunner() {
+    const [maxX, setMaxX] = useState(window.innerWidth);
+    const [maxY, setMaxY] = useState(window.innerHeight);
+    const [chickenLoc, setChickenLoc] = useState({ x: -100, y: -100 });
+    const [isMoving, setIsMoving] = useState(true); // Track movement state
 
-    const [maxX, setMaxX] = useState(0);
-    const [maxY, setMaxY] = useState(0);
+    const directionRef = useRef({ x: 0, y: 0 });
 
+    // Handle window resizing
     useEffect(() => {
-        setMaxX(window.innerWidth);
-        setMaxY(window.innerHeight);
+        const handleResize = () => {
+            setMaxX(window.innerWidth*0.5);
+            setMaxY(window.innerHeight*0.5);
+        };
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
     }, []);
 
     function getMovementRad() {
         return getRandomInt(0, 360) * (Math.PI / 180);
     }
 
-
-    const [chickenLoc, setChickenLoc] = useState({x : -100, y : -100});
-    const [chickenDirection, setChickenDirection] = useState({x : 0, y : 0});
-
     function initChicken() {
-        const startingX = getRandomInt(0, maxX);
-        const startingY = getRandomInt(0, maxY);
+        if (maxX === 0 || maxY === 0) return;
 
-        const movementRad = getMovementRad;
+        const startingX = getRandomInt(50, maxX - 50);
+        const startingY = getRandomInt(50, maxY - 50);
 
-        const direction = {
-            x : Math.cos(movementRad),
-            y : Math.sin(movementRad)
-        }
+        const movementRad = getMovementRad();
+        const newDirection = {
+            x: Math.cos(movementRad),
+            y: Math.sin(movementRad),
+        };
 
-        setChickenLoc({
-            x : startingX,
-            y : startingY,
-        });
+        directionRef.current = newDirection; // Store latest direction
+        setChickenLoc({ x: startingX, y: startingY });
 
-        setChickenDirection(direction);
-
+        console.log("🐔 Chicken initialized at:", { x: startingX, y: startingY });
+        console.log("➡️ Direction set to:", newDirection);
     }
 
-    
+    useEffect(() => {
+        if (maxX > 0 && maxY > 0) {
+            initChicken();
+        }
+    }, [maxX, maxY]);
 
     useEffect(() => {
+        if (!isMoving) return; // Skip interval if chicken is not moving
+
         function AdvanceXY() {
             setChickenLoc((prev) => {
-                const newX = prev.x + chickenDirection.x * 10;
-                const newY = prev.y + chickenDirection.y * 10;
+                const newX = prev.x + directionRef.current.x * 10;
+                const newY = prev.y + directionRef.current.y * 10;
 
-                // chicken moves off-screen, reset it
+                console.log(`🐔 Moving to: { x: ${newX}, y: ${newY} }`);
+
                 if (newX > maxX || newX < 0 || newY > maxY || newY < 0) {
+                    console.log("🐔 Out of bounds, resetting...");
                     initChicken();
                     return prev;
                 }
 
                 return { x: newX, y: newY };
-
             });
         }
 
-        const interval = setInterval(AdvanceXY, 1000);
-
+        const interval = setInterval(AdvanceXY, 50);
         return () => clearInterval(interval);
-
-    }, [chickenDirection])
+    }, [maxX, maxY, isMoving]); 
+    const handleClick = () => {
+        setIsMoving((prevState) => !prevState); // Toggle movement state
+        console.log(isMoving ? "🐔 Stopped!" : "🐔 Started!");
+    };
 
     return (
-        <div className="chicken-runner">
-            <img src='/better_chicken.png' className="absolute z-50" 
-                style ={{
-                    scale : "0.2",
-                    zIndex : 100,
-                    left : `${chickenLoc.x}px`,
-                    top : `${chickenLoc.y}px`,
+        <div className="chicken-runner" style={{ position: "relative", width: "100%", height: "100vh" }}>
+            <img
+                src="/better_chicken.png"
+                key={`${chickenLoc.x}-${chickenLoc.y}`} // Force React to re-render the image when position changes
+                className="absolute z-50"
+                onClick={handleClick} // Handle click to stop/start
+                style={{
+                    scale: 2,
+                    width: "50px", // Adjust size if needed
+                    height: "50px", // Adjust size if needed
+                    left: `${chickenLoc.x}px`,
+                    top: `${chickenLoc.y}px`,
+                    position: "absolute",
+                    zIndex: 100,
                 }}
             />
         </div>
-    )
+    );
 }

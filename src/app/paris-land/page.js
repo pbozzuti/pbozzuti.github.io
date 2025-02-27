@@ -26,16 +26,19 @@ const YoutubeEmbed = ({ embedId }) => (
 
 export default function ParisLand() {
     return (
-        <div className="flex flex-col w-screen h-screen justify-center items-center space-y-10">
-            <h1>PARIS LAND</h1>
+        <div 
+          className="flex flex-col w-screen h-screen justify-center items-center space-y-10"
+          style={{ backgroundImage: 'url("/minecraft_bg.jpg")', backgroundSize: 'cover', backgroundPosition: 'center' }}
+        >
+            <h1> <b> PARIS LAND </b> </h1>
             <p> i am paris, this is my land :)</p>
-            <h1>Youtube Embed</h1>
+            {/*<h1>Youtube Embed</h1>
             <YoutubeEmbed embedId={"FgVtrqtTR_Y?si=JstbhdHMqcPTQZPA"}/>
             {/* Wrapping the Button in a centering container */}
             <div className="flex justify-center w-full">
-                <Button url='https://pbozzuti.github.io/' text='lets play bruh' />
+                {/* <Button url='https://pbozzuti.github.io/' text='lets play bruh' />
                 <Button url= 'https://egggame.org/' text = 'egg me bruh' />
-                <Button url='https://classic.minecraft.net/' text='minecraft but bad' />
+                <Button url='https://classic.minecraft.net/' text='minecraft but bad' /> */}
             </div>
 
             <ChickenRunner />
