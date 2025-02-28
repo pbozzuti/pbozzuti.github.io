@@ -1,11 +1,9 @@
-"use client";
-
 import React from "react";
 import PropTypes from "prop-types";
-import Button from '../Components/Button'; 
-import ChickenRunner from "../Components/ChickenRunner";
+import Button from './Components/Button'; 
+import ChickenRunner from "./Components/ChickenRunner";
 
-
+// Youtube Embed Component
 const YoutubeEmbed = ({ embedId }) => (
     <div className="video-responsive">
       <iframe
@@ -18,13 +16,14 @@ const YoutubeEmbed = ({ embedId }) => (
         title="Embedded youtube"
       />
     </div>
-  );
-  
-  YoutubeEmbed.propTypes = {
-    embedId: PropTypes.string.isRequired
-  };
+);
 
-export default function ParisLand() {
+YoutubeEmbed.propTypes = {
+    embedId: PropTypes.string.isRequired
+};
+
+// Main Component - App.js
+const App = () => {
     return (
         <div 
           className="flex flex-col w-screen h-screen justify-center items-center space-y-10"
@@ -32,16 +31,25 @@ export default function ParisLand() {
         >
             <h1> <b> PARIS LAND </b> </h1>
             <p> i am paris, this is my land :)</p>
-            {/*<h1>Youtube Embed</h1>
+            {/* Uncomment this section if you'd like to embed a YouTube video */}
+            {/* 
+            <h1>Youtube Embed</h1>
             <YoutubeEmbed embedId={"FgVtrqtTR_Y?si=JstbhdHMqcPTQZPA"}/>
+            */}
             {/* Wrapping the Button in a centering container */}
             <div className="flex justify-center w-full">
-                {/* <Button url='https://pbozzuti.github.io/' text='lets play bruh' />
+                {/* Uncomment the buttons if needed */}
+                {/* 
+                <Button url='https://pbozzuti.github.io/' text='lets play bruh' />
                 <Button url= 'https://egggame.org/' text = 'egg me bruh' />
-                <Button url='https://classic.minecraft.net/' text='minecraft but bad' /> */}
+                <Button url='https://classic.minecraft.net/' text='minecraft but bad' />
+                */}
             </div>
 
+            {/* Chicken Runner Game */}
             <ChickenRunner />
         </div>
     );
-}
+};
+
+export default App;
